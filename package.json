@@ -9,7 +9,8 @@
     "build:prod": "webpack -p --env=production",
     "dev-server": "webpack-dev-server --mode=development",
     "test": "jest --env=node --config=jest.config.json --watchAll",
-    "start": "node server/server.js"
+    "start": "node server/server.js",
+    "heroku-postbuild": "yarn run build:prod"
   },
   "author": "Albert Feka",
   "license": "ISC",
