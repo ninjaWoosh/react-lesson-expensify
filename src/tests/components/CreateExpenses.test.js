@@ -3,12 +3,12 @@ import { shallow } from "enzyme";
 import {CreateExpenses} from "../../components/CreateExpenses";
 import expenses from "../fixtures/expenses";
 
-let addExpense, history, wrapper;
+let startAddExpense, history, wrapper;
 
 beforeEach(() => {
-    addExpense = jest.fn();
+    startAddExpense = jest.fn();
     history = { push: jest.fn() };
-    wrapper = shallow(<CreateExpenses addExpense={addExpense} history={history} />);
+    wrapper = shallow(<CreateExpenses startAddExpense={startAddExpense} history={history} />);
 });
 
 test("Should render CreateExpenses component", () => {
@@ -17,6 +17,6 @@ test("Should render CreateExpenses component", () => {
 
 test("Should render CreateExpenses component with correct parameters", () => {
     wrapper.find("ExpenseForm").prop("onSubmit")(expenses[0]);
-    expect(addExpense).toBeCalledWith(expenses[0]);
+    expect(startAddExpense).toBeCalledWith(expenses[0]);
     expect(history.push).toBeCalledWith("/");
 });
