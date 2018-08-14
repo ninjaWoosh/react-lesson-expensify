@@ -1,13 +1,13 @@
-import {startAddExpense, addExpense, removeExpense, editExpense, setExpenses, startSetExpenses} from "../../actions/expenses";
+import {startAddExpense, addExpense, removeExpense, editExpense, setExpenses, startSetExpenses, startRemoveExpense} from "../../actions/expenses";
 import expenses from "../fixtures/expenses";
 import configureStore from 'redux-mock-store';
 import thunk from "redux-thunk";
 import database from "../../firebase/firebase";
 
 const createMockStore = configureStore([thunk]);
-const expenseData = {};
 
 beforeEach((done) => {
+    const expenseData = {};
     expenses.forEach(({id, description, note, amount, createdAt}) => {
         expenseData[id] = {
             description,
@@ -25,6 +25,21 @@ test("Should remove expense", () => {
     expect(action).toEqual({
         type: "REMOVE_EXPENSE",
         id: "123abc"
+    });
+});
+
+test("Should remove expense from firebase", (done) => {
+    const store = createMockStore({});
+
+    store.dispatch(startRemoveExpense(expenses[1].id)).then(() => {
+        const actions = store.getActions();
+
+        expect(actions[0]).toEqual({
+            type: "REMOVE_EXPENSE",
+            id: expenses[1].id
+        });
+
+        done();
     });
 });
 

@@ -3,13 +3,13 @@ import {shallow} from "enzyme";
 import {EditExpenses} from "../../components/EditExpenses";
 import expenses from "../fixtures/expenses";
 
-let editExpense, removeExpense, history, wrapper;
+let editExpense, startRemoveExpense, history, wrapper;
 
 beforeEach(() => {
     editExpense = jest.fn();
-    removeExpense = jest.fn();
+    startRemoveExpense = jest.fn();
     history = { push: jest.fn() };
-    wrapper = shallow(<EditExpenses expense={expenses[0]} editExpense={editExpense} removeExpense={removeExpense} history={history} />);
+    wrapper = shallow(<EditExpenses expense={expenses[0]} editExpense={editExpense} startRemoveExpense={startRemoveExpense} history={history} />);
 });
 
 test("Should render edit expenses component", () => {
@@ -24,6 +24,6 @@ test("Should render with correct submit data", () => {
 
 test("Should render with click data", () => {
     wrapper.find("button").prop("onClick")();
-    expect(removeExpense).toBeCalledWith(expenses[0].id);
+    expect(startRemoveExpense).toBeCalledWith(expenses[0].id);
     expect(history.push).toBeCalledWith("/");
 });
