@@ -6,7 +6,6 @@ import configStore from "./store/configStore";
 import {startSetExpenses} from "./actions/expenses";
 import "normalize.css/normalize.css";
 import "./styles/styles.scss";
-import "./firebase/firebase";
 
 const store = configStore();
 
