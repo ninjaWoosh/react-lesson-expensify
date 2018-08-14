@@ -1,4 +1,4 @@
-import {startAddExpense, addExpense, removeExpense, editExpense, setExpenses, startSetExpenses, startRemoveExpense} from "../../actions/expenses";
+import {startAddExpense, addExpense, removeExpense, editExpense, setExpenses, startSetExpenses, startRemoveExpense, startEditExpense} from "../../actions/expenses";
 import expenses from "../fixtures/expenses";
 import configureStore from 'redux-mock-store';
 import thunk from "redux-thunk";
@@ -30,17 +30,21 @@ test("Should remove expense", () => {
 
 test("Should remove expense from firebase", (done) => {
     const store = createMockStore({});
-
-    store.dispatch(startRemoveExpense(expenses[1].id)).then(() => {
+    const id = expenses[1].id;
+    store.dispatch(startRemoveExpense(id)).then(() => {
         const actions = store.getActions();
 
         expect(actions[0]).toEqual({
             type: "REMOVE_EXPENSE",
-            id: expenses[1].id
+            id
         });
 
+        return database.ref(`expenses/${id}`).once("value");
+        
+    }).then((snapshot) => {
+        expect(snapshot.val()).toBeFalsy();
         done();
-    });
+    });;
 });
 
 test("Should edit expense", () => {
@@ -51,6 +55,36 @@ test("Should edit expense", () => {
         updates: {
             note: "This is some note"
         }
+    });
+});
+
+test("Should edit expense on firebase", (done) => {
+    const store = createMockStore({});
+    const id = expenses[1].id;
+    const updates = {
+        description: "Updated description",
+        amount: 19
+    };
+
+    store.dispatch(startEditExpense(id, updates)).then(() => {
+        const actions = store.getActions();
+
+        expect(actions[0]).toEqual({
+            type: "EDIT_EXPENSE",
+            id,
+            updates
+        });
+
+        return database.ref(`expenses/${id}`).once("value");
+    }).then((snapshot) => {
+        const snapshotValues = snapshot.val();
+        const updatedExpense = {
+            description: snapshotValues.description,
+            amount: snapshotValues.amount
+        }
+
+        expect(updatedExpense).toEqual(updates);
+        done();
     });
 });
 
